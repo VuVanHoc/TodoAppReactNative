@@ -9,12 +9,16 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import ModalCommon from '../components/ModalCommon';
 import {TaskType} from '../components/TaskItem';
 import TaskItem from '../components/TaskItem';
 
-function HomeScreen({navigation}) {
+interface HomeScreenProps {
+  navigation: any;
+}
+function HomeScreen({navigation}: HomeScreenProps) {
   const [showModal, setShowModal] = useState(false);
   const [taskValue, setTaskValue] = useState<string | undefined>('');
   const [tasks, setTasks] = useState<TaskType[]>([]);
@@ -43,6 +47,7 @@ function HomeScreen({navigation}) {
         }
       });
       setTasks(newTasks);
+      ToastAndroid.show('Updated task successfully!', ToastAndroid.SHORT);
     } else {
       setTasks([
         ...tasks,
@@ -68,6 +73,7 @@ function HomeScreen({navigation}) {
   };
   const _removeTask = (id: string) => {
     setTasks([...tasks.filter(task => task.id !== id)]);
+    ToastAndroid.show('Deleted task successfully!', ToastAndroid.SHORT);
   };
   const _setDone = (id: string) => {
     const newTasks = [...tasks];
@@ -77,6 +83,7 @@ function HomeScreen({navigation}) {
       }
     });
     setTasks(newTasks);
+    ToastAndroid.show('Updated task successfully!', ToastAndroid.SHORT);
   };
   const totalTaskDone = useMemo(
     () => tasks.filter(task => task.done).length,
@@ -117,7 +124,7 @@ function HomeScreen({navigation}) {
         renderItem={item => (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('Detail');
+              navigation.navigate('Detail', {task: item.item});
             }}>
             <TaskItem
               onUpdate={() => _updateTask(item.item.id)}
